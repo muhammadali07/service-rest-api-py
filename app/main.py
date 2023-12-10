@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify
-
-from crud import access_users
+from flask import Flask, request, jsonify, send_file
+from flask_cors import cross_origin
+from crud import access_users, export_file
 
 app = Flask(__name__)
 
 @app.route("/")
+@cross_origin()
 def hello_world():
     return "<p>Hello, World Guys!</p>"
 
@@ -53,6 +54,13 @@ def body_request():
     data = request.json
 
     return jsonify({"status_code": "00", "message": "sucessfully", "data":data}), 200
+
+@app.route("/download-csv", methods=["POST"])
+def exportCSV():
+    data = request.json
+    print(data)
+    result = export_file.exportCsv(data)
+    return send_file(result["data"])
 
 if __name__== "__main__":
     app.run(debug=True)
