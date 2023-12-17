@@ -1,31 +1,32 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, render_template
 from flask_cors import cross_origin
 from app import access_users, export_file
 
 app = Flask(__name__)
 
 @app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/login", methods=["POST"]) # standart routing
 @cross_origin()
-def hello_world():
-    return "<p>Hello, World Guys!</p>"
-
-
-@app.route("/login", methods=["GET"]) # standart routing
-async def login():
+def login():
     data = request.get_json()
+    print(data)
     username = data.get("name", "")
     password = data.get("password", "")
-    result = await access_users.login(data)
+    result = access_users.login(data)
     return jsonify(result)
 
 
-@app.route("/login-2", methods=["GET"]) # standart routing
+@app.route("/login-2", methods=["POST"]) # standart routing
 def login2():
     data = request.get_json()
     username = data.get("name", "")
     password = data.get("password", "")
     result = access_users.login_2(data)
-    return jsonify(result)
+    return result
 
 
 @app.route("/path-variable/<name>", methods=["GET"]) #path variable
